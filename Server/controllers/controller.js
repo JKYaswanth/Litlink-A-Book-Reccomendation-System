@@ -1,4 +1,6 @@
 const User = require("../models/user_model");
+const bcrypt = require("bcrypt");
+
 const home = async (req, res) => {
     try {
         res.status(200).send("Welcome to our home page using controller");
@@ -21,7 +23,8 @@ const register = async (req, res) => {
             //status(500) :- Internal Server Error
         }
 
-        const userCreated = await User.create({username, password, emailid, phone}); //Else the collection is created
+        //Else the collection is created
+        const userCreated = await User.create({username, password, emailid, phone});
 
         res.status(201).json({msg: userCreated});   //Reflected as a JSON message
 
