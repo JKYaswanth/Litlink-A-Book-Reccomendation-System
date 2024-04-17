@@ -8,7 +8,7 @@ auth-router.js :- Routing handler
 auth-controller :- Controller file {Contains all the Logic}
 console.log(req.body) :- gives access to the information in the body.
 
-packages installed :- bcrypt, dotenv, express, mongoose, nodemon
+packages installed :- bcrypt, dotenv, express, mongoose, nodemon, jsonwebtoken
 
 next() :- Call back fuction that is used to pass control to the next middleware function in the chain.
 
@@ -23,6 +23,8 @@ Tutorial Code for Password Encryption in the controller file
             emailid,
             phone
     });
+
+JWT is used for Authorization(Permisions) and Authentication(identify)
 
 
 

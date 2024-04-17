@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 //schema definition for the collection
 const userSchema = new mongoose.Schema({
 
@@ -30,8 +31,8 @@ userSchema.pre("save", async function(){
     const user = this;
     console.log("Actual Data ", this);
 
-    if(!user.isModified("password")){
-        return next();
+    if(!user.isModified("password")){   //Checks if the password has been modified
+        return next();  //if yes then move to next middleware
     }
 
     try {
@@ -44,6 +45,25 @@ userSchema.pre("save", async function(){
     }
 }
 );
+
+userSchema.methods.generateToken = async function(){
+    try {
+        return jwt.sign(
+            {
+                userId: this._id.toString(),
+                email: this.emailid,
+            },
+
+            process.env.TOKEN_SECKEY, //Digital Signature
+
+            {
+                expiresIn: "7d", //Time after which the token expires
+            }
+        );
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 const User = new mongoose.model('User',userSchema);
 module.exports = User;
