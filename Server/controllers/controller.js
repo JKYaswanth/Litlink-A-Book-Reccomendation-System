@@ -22,6 +22,7 @@ const register = async (req, res) => {
             //status(200) :- OK
             //status(201) :- Created
             //status(500) :- Internal Server Error
+            //status(401) :- Unauthorized Request
         }
 
         //Else the collection is created
@@ -39,4 +40,33 @@ const register = async (req, res) => {
 
 };
 
-module.exports = {home , register};
+const login = async(req, res) => {
+    try {
+        const {emailid, password} = req.body;
+        const userExist = await User.findOne({ emailid });
+
+        if(!userExist){
+            return res.status(400).json({message:"  Invalid Credentials"});
+        }
+
+        // const user = await bcrypt.compare(password, userExist.password);
+        const user = await userExist.comparePassword(password);
+        
+
+        if(user){
+            res.status(201).json({
+                msg:"Login Successfull",
+                token:await userExist.generateToken(), //Generates token for the Login data
+                userId: userExist._id.toString(),
+            });
+        }
+        else{
+            res.status(401).json({message: "Invalid email or password"})
+        }
+
+    } catch (error) {
+        res.status(500).json("Internal Server Error !!");
+    }
+}
+
+module.exports = {home , register, login};
